@@ -22,9 +22,9 @@ public class MemoDBHelper extends SQLiteOpenHelper {
     //ファイルパスカラム
     public static final String DATA = "_data";
     //作成日時
-    public static final String DATA_ADDED = "data_added";
+    public static final String DATE_ADDED = "data_added";
     //更新日時
-    public static final String DATA_MODIFIED = "data_modified";
+    public static final String DATE_MODIFIED = "data_modified";
 
     //コンストラクタでデータベース名とバージョンを指定
     public MemoDBHelper(Context context){
@@ -38,8 +38,8 @@ public class MemoDBHelper extends SQLiteOpenHelper {
                         _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         TITLE + " TEXT, " +
                         DATA + " TEXT, " +
-                        DATA_ADDED + " INTEGER NOT NULL, " +
-                        DATA_MODIFIED + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL" +
+                        DATE_ADDED + " INTEGER NOT NULL, " +
+                        DATE_MODIFIED + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL" +
                         " ) ";
         db.execSQL(createTable);
     }

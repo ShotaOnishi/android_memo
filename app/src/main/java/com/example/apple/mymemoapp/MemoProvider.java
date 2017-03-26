@@ -11,16 +11,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
+import android.os.ParcelFileDescriptor;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-
-import static android.R.attr.defaultHeight;
-import static android.R.attr.theme;
-import static android.R.attr.x;
 
 /**
  * Created by apple on 2017/03/24.
@@ -64,6 +62,11 @@ public class MemoProvider extends ContentProvider {
 
     //データの保存に関するデータベース
     private SQLiteDatabase mDatabase;
+
+    @Override
+    public String getType(Uri uri){
+        return null;
+    }
 
     @Override
     public boolean onCreate(){
@@ -269,6 +272,24 @@ public class MemoProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("invalid uri:" + uri);
         }
+    }
+
+    @Override
+    public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException{
+        if(!TextUtils.isEmpty(mode) && mode.contains("w") && !checkSignaturePermission()){
+            //異なるアプリケーションが、書き込み用にファイルを開こうとした場合
+            throw new SecurityException();
+        }
+
+        //Uriのチェックを行う
+        int match = sMatcher.match(uri);
+
+        //個別のメモの場合には、そのファイルを開いてストリームを渡す
+        if(match == URI_MATCH_MEMO_ITEM){
+            return openFileHelper(uri, mode);
+        }
+
+        throw new IllegalArgumentException("invalid uri:" + uri);
     }
 
 
